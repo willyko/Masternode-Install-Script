@@ -9,7 +9,7 @@ fi
 HBAR="---------------------------------------------------------------------------------------"
 
 # import messages
-source <(curl -sL https://raw.githubusercontent.com/Syscoin/Masternode-Install-Script/master/messages.sh) 
+source <(curl -sL https://raw.githubusercontent.com/willyko/Masternode-Install-Script/master/messages.sh) 
 
 pause(){
   echo ""
@@ -174,9 +174,9 @@ upgrade() {
   update_system       # update all the system libraries
   clear
   
-  install_sentinel
-  install_virtualenv
-  configure_sentinel
+#  install_sentinel
+#  install_virtualenv
+#  configure_sentinel
   
   create_systemd_syscoind_service
 
@@ -314,8 +314,6 @@ assetindex=1
 port=8369
 rpcport=8370
 rpcallowip=127.0.0.1
-masternodeblsprivkey=$MASTERNODE_BLS_KEY
-externalip=$EXTERNAL_ADDRESS
 EOF
 )
 
@@ -332,11 +330,7 @@ assetindex=1
 port=18369
 rpcport=18370
 rpcallowip=127.0.0.1
-externalip=$EXTERNAL_ADDRESS
 gethtestnet=1
-addnode=54.190.239.153
-addnode=52.40.171.92
-masternodeblsprivkey=$MASTERNODE_BLS_KEY
 EOF
 )
 
@@ -370,7 +364,7 @@ create_and_configure_syscoin_user(){
   grep -q "alias syscoin-cli" ~/.bashrc || echo "alias syscoin-cli='syscli'" >> ~/.bashrc
   grep -q "sysd\(\)" ~/.bashrc || echo "sysd() { sudo su -c \"syscoind \$*\" syscoin; }" >> ~/.bashrc
   grep -q "alias syscoind" ~/.bashrc || echo "alias syscoind='echo \"systemd is running as a service - please stop that process first, than use sysd instead of systemd\"'" >> ~/.bashrc
-  grep -q "sysmasternode\(\)" ~/.bashrc || echo "sysmasternode() { bash <(curl -sL https://raw.githubusercontent.com/Syscoin/Masternode-Install-Script/master/script.sh) ; }" >> ~/.bashrc
+#   grep -q "sysmasternode\(\)" ~/.bashrc || echo "sysmasternode() { bash <(curl -sL https://raw.githubusercontent.com/Syscoin/Masternode-Install-Script/master/script.sh) ; }" >> ~/.bashrc
 
   echo "$SYSCOIN_CONF" > ~/syscoin.conf
   if [ ! "$IS_MAINNET" = "" ] && [ ! "$IS_MAINNET" = "y" ] && [ ! "$IS_MAINNET" = "Y" ]; then
@@ -424,7 +418,7 @@ install_ufw(){
 
 # if there is <4gb and the user said yes to a swapfile...
 maybe_create_swap_file
-install_ufw
+# install_ufw
 
 # prepare to build
 update_system
@@ -434,12 +428,12 @@ clear
 create_and_configure_syscoin_user
 create_systemd_syscoind_service
 start_syscoind
-install_sentinel
-install_virtualenv
-configure_sentinel
+# install_sentinel
+# install_virtualenv
+#configure_sentinel
 install_fail2ban
 clear
 # ping sentinel
-sudo su -c "sentinel-ping" syscoin
+# sudo su -c "sentinel-ping" syscoin
 
 do_exit
