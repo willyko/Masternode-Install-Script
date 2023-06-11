@@ -156,9 +156,18 @@ configure_sentinel(){
   sudo mv -f ~/sentinel /home/syscoin
   sudo chown -R syscoin.syscoin /home/syscoin/sentinel
 
+  # Get Ubuntu version
+  ubuntu_version=$(lsb_release -r -s)
+  ubuntu_major_version=${ubuntu_version%%.*}
+  
   # create sentinel-ping
-  echo "$SENTINEL_PING" > ~/sentinel-ping
-
+  # Check if Ubuntu major version is greater than or equal to 22
+  if (( ubuntu_major_version >= 22 )); then
+    echo "$SENTINEL_PING_PYTHON39" > ~/sentinel-ping
+  else
+    echo "$SENTINEL_PING" > ~/sentinel-ping
+  fi
+  
   # install sentinel-ping script
   sudo mv -f ~/sentinel-ping /usr/local/bin
   sudo chmod +x /usr/local/bin/sentinel-ping
@@ -232,6 +241,12 @@ EOF
 SENTINEL_PING=$(cat <<EOF
 #!/bin/bash
 /home/syscoin/sentinel/venv/bin/python /home/syscoin/sentinel/bin/sentinel.py 2>&1 >> /home/syscoin/sentinel/sentinel-cron.log
+EOF
+)
+
+SENTINEL_PING_PYTHON39=$(cat <<EOF
+#!/bin/bash
+/home/syscoin/sentinel/bin/python /home/syscoin/sentinel/bin/sentinel.py 2>&1 >> /home/syscoin/sentinel/sentinel-cron.log
 EOF
 )
 
