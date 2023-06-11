@@ -115,11 +115,27 @@ install_sentinel(){
 install_virtualenv(){
   echo "$MESSAGE_VIRTUALENV"
   cd ~/sentinel
-  # install virtualenv
-  sudo apt-get -y install git python3 virtualenv
-  # setup virtualenv
-  virtualenv -p $(which python3) ./venv
-  ./venv/bin/pip install -r requirements.txt
+  
+  # Get Ubuntu version
+  ubuntu_version=$(lsb_release -r -s)
+  ubuntu_major_version=${ubuntu_version%%.*}
+
+  # Check if Ubuntu major version is greater than or equal to 22
+  if (( ubuntu_major_version >= 22 )); then
+    echo "Ubuntu major version is greater than or equal to 22. Installing Python 3.9..."
+    sudo add-apt-repository ppa:deadsnakes/ppa -y
+    sudo apt install -y software-properties-common python3.9 python3.9-venv
+    python3.9 -m venv . sentinel
+    bin/pip install -r requirements.txt
+    bin/python bin/sentinel.py
+  else
+    echo "Ubuntu major version is not greater than or equal to 22. Installing the old way..."
+    # install virtualenv
+    sudo apt-get -y install git python3 virtualenv
+    # setup virtualenv
+    virtualenv -p $(which python3) ./venv
+    ./venv/bin/pip install -r requirements.txt
+  fi
   clear
 }
 
